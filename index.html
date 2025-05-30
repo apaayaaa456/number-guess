@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tebak Kombinasi Angka</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; background: #f4f4f4; }
+    input[type="text"] {
+      font-size: 1.2em; padding: 5px; width: 120px; text-align: center;
+    }
+    button { font-size: 1em; padding: 6px 12px; margin-left: 10px; }
+    .result { margin-top: 20px; }
+    .guess-row {
+      margin-bottom: 10px;
+    }
+    .digit {
+      display: inline-block;
+      width: 40px; height: 40px;
+      line-height: 40px;
+      margin: 4px;
+      border-radius: 4px;
+      font-weight: bold;
+      color: white;
+    }
+    .green { background-color: green; }
+    .yellow { background-color: goldenrod; }
+    .gray { background-color: gray; }
+  </style>
+</head>
+<body>
+  <h1>Tebak 4 Angka</h1>
+  <p>Masukkan 4 angka unik (0–9):</p>
+  <input type="text" id="guess" maxlength="4" />
+  <button onclick="checkGuess()">Tebak</button>  <div class="result" id="result"></div>  <script>
+    // Generate 4 unique digits
+    const secret = [];
+    while (secret.length < 4) {
+      const digit = Math.floor(Math.random() * 10);
+      if (!secret.includes(digit)) secret.push(digit);
+    }
+    console.log("Jawaban:", secret.join("")); // Bisa disembunyikan
+
+    function checkGuess() {
+      const input = document.getElementById("guess").value;
+      const resultDiv = document.getElementById("result");
+
+      if (!/^\d{4}$/.test(input)) {
+        alert("Masukkan tepat 4 digit angka!");
+        return;
+      }
+
+      const guess = input.split('').map(Number);
+
+      // Cek angka unik
+      if (new Set(guess).size !== 4) {
+        alert("Angka tidak boleh duplikat!");
+        return;
+      }
+
+      // Buat satu baris tebakan
+      const guessRow = document.createElement("div");
+      guessRow.classList.add("guess-row");
+
+      // Evaluasi tebakan
+      guess.forEach((digit, i) => {
+        const div = document.createElement("div");
+        div.classList.add("digit");
+        div.textContent = digit;
+
+        if (digit === secret[i]) {
+          div.classList.add("green");
+        } else if (secret.includes(digit)) {
+          div.classList.add("yellow");
+        } else {
+          div.classList.add("gray");
+        }
+
+        guessRow.appendChild(div);
+      });
+
+      resultDiv.appendChild(guessRow);
+
+      // Cek kemenangan
+      if (guess.join('') === secret.join('')) {
+        const win = document.createElement('p');
+        win.textContent = 'Selamat! Kamu berhasil menebak kombinasi yang benar!';
+        win.style.fontWeight = 'bold';
+        win.style.color = 'green';
+        resultDiv.appendChild(win);
+      }
+
+      // Kosongkan input untuk tebakan berikutnya
+      document.getElementById("guess").value = "";
+    }
+  </script></body>
+</html>
